@@ -1,6 +1,4 @@
-
-Quick Installation Guide for musl libc
-======================================
+# Quick Installation Guide for musl libc
 
 There are many different ways to install musl depending on your usage
 case. This document covers only the build and installation of musl by
@@ -12,9 +10,16 @@ Building complete native or cross-compiler toolchains is outside the
 scope of this INSTALL file. More information can be found on the musl
 website and community wiki.
 
+# Table of Contents
 
-Build Prerequisites
--------------------
+- [Build Prerequisites](#prereqs)
+- [Supported Targets](#supported_targets)
+- [Build and Installation Procedure](#build_install)
+- [Notes on Dynamic Linking](#dynamic_linking)
+- [Checking for Successful Installation](#check_success)
+
+## Build Prerequisites
+<a name='prereqs'></a>
 
 The only build-time prerequisites for musl are GNU Make and a
 freestanding C99 compiler toolchain targeting the desired instruction
@@ -32,8 +37,8 @@ the Linux kernel headers need to be available.
 
 
 
-Supported Targets
------------------
+## Supported Targets
+<a name='supported_targets'></a>
 
 musl can be built for the following CPU instruction set architecture
 and ABI combinations:
@@ -98,8 +103,8 @@ and ABI combinations:
 
 
 
-Build and Installation Procedure
---------------------------------
+## Build and Installation Procedure
+<a name='build_install'></a>
 
 To build and install musl:
 
@@ -117,35 +122,35 @@ compilers, this may not be possible. If detection fails or selects the
 wrong architecture, you can provide an explicit selection on the
 configure command line.
 
-By default, configure installs to a prefix of "/usr/local/musl". This
+By default, configure installs to a prefix of ``/usr/local/musl``. This
 differs from the behavior of most configure scripts, and is chosen
 specifically to avoid clashing with libraries already present on the
-system. DO NOT set the prefix to "/usr", "/usr/local", or "/" unless
+system. DO NOT set the prefix to ``/usr``, ``/usr/local``, or ``/`` unless
 you're upgrading libc on an existing musl-based system. Doing so will
-break your existing system when you run "make install" and it may be
+break your existing system when you run ``make install`` and it may be
 difficult to recover.
 
 
 
-Notes on Dynamic Linking
-------------------------
+## Notes on Dynamic Linking
+<a name='dynamic_linking'></a>
 
 If dynamic linking is enabled, one file needs to be installed outside
-of the installation prefix: /lib/ld-musl-$ARCH.so.1. This is the
+of the installation prefix: ``/lib/ld-musl-$ARCH.so.1``. This is the
 dynamic linker. Its pathname is hard-coded into all dynamic-linked
 programs, so for the sake of being able to share binaries between
 systems, a consistent location should be used everywhere. Note that
 the same applies to glibc and its dynamic linker, which is named
-/lib/ld-linux.so.2 on i386 systems.
+``/lib/ld-linux.so.2`` on i386 systems.
 
 If for some reason it is impossible to install the dynamic linker in
 its standard location (for example, if you are installing without root
-privileges), the --syslibdir option to configure can be used to
+privileges), the ``--syslibdir`` option to configure can be used to
 provide a different location
 
 At runtime, the dynamic linker needs to know the paths to search for
 shared libraries. You should create a text file named
-/etc/ld-musl-$ARCH.path (where $ARCH matches the architecture name
+``/etc/ld-musl-$ARCH.path`` (where ``$ARCH`` matches the architecture name
 used in the dynamic linker) containing a list of directories where you
 want the dynamic linker to search for shared libraries, separated by
 colons or newlines. If the dynamic linker has been installed in a
@@ -153,17 +158,18 @@ non-default location, the path file also needs to reside at that
 location (../etc relative to the chosen syslibdir).
 
 If you do not intend to use dynamic linking, you may disable it by
-passing --disable-shared to configure; this also cuts the build time
+passing ``--disable-shared`` to configure; this also cuts the build time
 in half.
 
 
 
-Checking for Successful Installation
-------------------------------------
+## Checking for Successful Installation
+<a name='check_success'></a>
 
 After installing, you should be able to use musl via the musl-gcc
 wrapper. For example:
 
+```
 cat > hello.c <<EOF
 #include <stdio.h>
 int main()
@@ -174,12 +180,13 @@ int main()
 EOF
 /usr/local/musl/bin/musl-gcc hello.c
 ./a.out
+```
 
 To configure autoconf-based program to compile and link against musl,
 set the CC variable to musl-gcc when running configure, as in:
-
+```
 CC=musl-gcc ./configure ...
-
+```
 You will probably also want to use --prefix when building libraries to
 ensure that they are installed under the musl prefix and not in the
 main host system library directories.
